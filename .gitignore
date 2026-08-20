@@ -1,0 +1,9 @@
+# Backend
+backend/venv/
+backend/__pycache__/
+backend/.env
+
+# Frontend (Angular ya tiene el suyo adentro, pero por si acaso)
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
