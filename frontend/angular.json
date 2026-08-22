@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "atrio-crm": {
+    "aba-crm": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -60,10 +60,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "atrio-crm:build:production"
+              "buildTarget": "aba-crm:build:production"
             },
             "development": {
-              "buildTarget": "atrio-crm:build:development"
+              "buildTarget": "aba-crm:build:development"
             }
           },
           "defaultConfiguration": "development"
