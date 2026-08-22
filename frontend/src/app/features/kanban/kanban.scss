@@ -233,6 +233,15 @@
 }
 
 .drag-handle {
+  cursor: grab;
+  user-select: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.drag-handle {
   color: #adb1b8;
 
   font-size: 18px;

@@ -1,0 +1,156 @@
+.panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.25);
+  z-index: 1000;
+}
+
+.lead-detail-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+
+  width: min(420px, 100%);
+  height: 100vh;
+
+  background: #ffffff;
+
+  box-shadow: -8px 0 24px rgba(15, 23, 42, 0.12);
+
+  z-index: 1001;
+
+  display: flex;
+  flex-direction: column;
+
+  animation: slide-in 0.2s ease-out;
+}
+
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  padding: 28px;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  h2 {
+    margin: 6px 0 0;
+    color: #06265c;
+    font-size: 24px;
+  }
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #64748b;
+}
+
+.close-button {
+  border: 0;
+  background: transparent;
+
+  font-size: 28px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  color: #64748b;
+}
+
+.panel-content {
+  padding: 28px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  .label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+  }
+}
+
+.source-badge {
+  width: fit-content;
+
+  padding: 7px 12px;
+
+  border-radius: 6px;
+
+  background: #eef3f9;
+
+  color: #06265c;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+  }
+
+  input {
+    width: 100%;
+    padding: 0;
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+
+    color: #111827;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    cursor: default;
+  }
+}
+
+.source-field {
+  align-items: flex-start;
+}
+
+.source-input {
+  width: auto !important;
+
+  padding: 7px 12px !important;
+
+  border-radius: 6px !important;
+
+  background: #eef3f9 !important;
+
+  color: #06265c !important;
+
+  font-size: 13px !important;
+  font-weight: 700;
+
+  cursor: default;
+}

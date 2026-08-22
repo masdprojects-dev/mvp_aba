@@ -8,6 +8,7 @@ import {
 import {
   CdkDrag,
   CdkDragDrop,
+  CdkDragHandle,
   CdkDropList,
   CdkDropListGroup,
   moveItemInArray,
@@ -16,6 +17,7 @@ import {
 
 import { Lead } from '../../core/models/lead.model';
 import { LeadsMock } from '../../core/services/leads-mock';
+import { LeadDetail } from './lead-detail/lead-detail';
 
 @Component({
   selector: 'app-kanban',
@@ -23,6 +25,8 @@ import { LeadsMock } from '../../core/services/leads-mock';
     CdkDropListGroup,
     CdkDropList,
     CdkDrag,
+    CdkDragHandle,
+    LeadDetail,
   ],
   templateUrl: './kanban.html',
   styleUrl: './kanban.scss',
@@ -33,6 +37,16 @@ export class Kanban implements OnInit {
 
   nuevos: Lead[] = [];
   contactados: Lead[] = [];
+
+  selectedLead: Lead | null = null;
+
+  selectLead(lead: Lead): void {
+    this.selectedLead = lead;
+  }
+
+  closeLeadDetail(): void {
+  this.selectedLead = null;
+}
 
   ngOnInit(): void {
     this.leadsMock.getLeads().subscribe({

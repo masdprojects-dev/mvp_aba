@@ -38,13 +38,18 @@
             class="lead-card"
             cdkDrag
             [cdkDragData]="lead"
+            (click)="selectLead(lead)"
           >
             <header class="card-header">
               <span class="project">
                 {{ lead.proyecto }}
               </span>
 
-              <span class="drag-handle">⠿</span>
+              <span
+  class="drag-handle"
+  cdkDragHandle
+  (click)="$event.stopPropagation()"
+>⠿</span>
             </header>
 
             <h3>{{ lead.nombre }}</h3>
@@ -94,13 +99,18 @@
             class="lead-card"
             cdkDrag
             [cdkDragData]="lead"
+            (click)="selectLead(lead)"
           >
             <header class="card-header">
               <span class="project">
                 {{ lead.proyecto }}
               </span>
 
-              <span class="drag-handle">⠿</span>
+              <span
+  class="drag-handle"
+  cdkDragHandle
+  (click)="$event.stopPropagation()"
+>⠿</span>
             </header>
 
             <h3>{{ lead.nombre }}</h3>
@@ -126,3 +136,10 @@
     </div>
   </section>
 </main>
+
+@if (selectedLead) {
+  <app-lead-detail
+    [lead]="selectedLead"
+    (closePanel)="closeLeadDetail()"
+  />
+}

@@ -1,0 +1,100 @@
+<div
+  class="panel-backdrop"
+  (click)="close()"
+></div>
+
+<aside class="lead-detail-panel">
+
+  <header class="panel-header">
+    <div>
+      <span class="eyebrow">
+        DETALLE DEL PROSPECTO
+      </span>
+
+      <h2>{{ leadForm.controls.nombre.value }}</h2>
+    </div>
+
+    <button
+      type="button"
+      class="close-button"
+      (click)="close()"
+      aria-label="Cerrar panel"
+    >
+      ×
+    </button>
+  </header>
+
+  <form
+    class="panel-content"
+    [formGroup]="leadForm"
+  >
+
+    <div class="form-field">
+      <label for="proyecto">
+        Proyecto
+      </label>
+
+      <input
+        id="proyecto"
+        type="text"
+        formControlName="proyecto"
+        readonly
+      />
+    </div>
+
+    <div class="form-field">
+      <label for="telefono">
+        Teléfono
+      </label>
+
+      <input
+        id="telefono"
+        type="text"
+        formControlName="telefono"
+        readonly
+      />
+    </div>
+
+    <div class="form-field">
+      <label for="correo">
+        Correo
+      </label>
+
+      <input
+        id="correo"
+        type="email"
+        formControlName="correo"
+        readonly
+      />
+    </div>
+
+    <div class="form-field source-field">
+      <label for="origen">
+        Origen publicitario
+      </label>
+
+      <input
+        id="origen"
+        class="source-input"
+        type="text"
+        formControlName="origen"
+        readonly
+      />
+    </div>
+
+    <div class="form-field">
+      <label for="fechaIngreso">
+        Fecha de ingreso
+      </label>
+
+      <input
+        id="fechaIngreso"
+        type="text"
+        formControlName="fechaIngreso"
+        readonly
+      />
+    </div>
+
+  </form>
+
+</aside>
