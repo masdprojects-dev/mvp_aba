@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "nombre": "Mariana López",
+    "telefono": "449 123 4567",
+    "correo": "mariana.lopez@example.com",
+    "proyecto": "Puerto Madero",
+    "origen": "Meta Ads",
+    "fechaIngreso": "2026-08-21",
+    "status": "NUEVO"
+  },
+  {
+    "id": 2,
+    "nombre": "Carlos Hernández",
+    "telefono": "449 555 0182",
+    "correo": "carlos.hernandez@example.com",
+    "proyecto": "Diana Tower",
+    "origen": "Google Ads",
+    "fechaIngreso": "2026-08-21",
+    "status": "NUEVO"
+  },
+  {
+    "id": 3,
+    "nombre": "Andrea Martínez",
+    "telefono": "449 312 7789",
+    "correo": "andrea.martinez@example.com",
+    "proyecto": "Puerto Madero",
+    "origen": "Sitio web",
+    "fechaIngreso": "2026-08-20",
+    "status": "NUEVO"
+  },
+  {
+    "id": 4,
+    "nombre": "Roberto Sánchez",
+    "telefono": "449 667 2314",
+    "correo": "roberto.sanchez@example.com",
+    "proyecto": "Diana Tower",
+    "origen": "Meta Ads",
+    "fechaIngreso": "2026-08-19",
+    "status": "CONTACTADO"
+  },
+  {
+    "id": 5,
+    "nombre": "Fernanda Ruiz",
+    "telefono": "449 841 5590",
+    "correo": "fernanda.ruiz@example.com",
+    "proyecto": "Puerto Madero",
+    "origen": "Referido",
+    "fechaIngreso": "2026-08-18",
+    "status": "CONTACTADO"
+  }
+]

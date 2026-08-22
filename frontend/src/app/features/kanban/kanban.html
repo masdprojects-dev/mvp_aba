@@ -1,0 +1,128 @@
+<main class="crm">
+  <section class="page-header">
+    <div>
+      <span class="eyebrow">CRM COMERCIAL</span>
+      <h1>Kanban de leads</h1>
+      <p>Gestiona los prospectos y muévelos entre las etapas del proceso comercial.</p>
+    </div>
+
+    <div class="lead-total">
+      <span>Total</span>
+      <strong>{{ nuevos.length + contactados.length }}</strong>
+    </div>
+  </section>
+
+  <section class="board" cdkDropListGroup>
+    <!-- NUEVOS -->
+    <div class="column">
+      <header class="column-header">
+        <div class="column-name">
+          <span class="status-indicator"></span>
+          <h2>Nuevos</h2>
+        </div>
+
+        <span class="counter">
+          {{ nuevos.length }}
+        </span>
+      </header>
+
+      <div
+        id="nuevos"
+        class="cards"
+        cdkDropList
+        [cdkDropListData]="nuevos"
+        (cdkDropListDropped)="drop($event)"
+      >
+        @for (lead of nuevos; track lead.id) {
+          <article
+            class="lead-card"
+            cdkDrag
+            [cdkDragData]="lead"
+          >
+            <header class="card-header">
+              <span class="project">
+                {{ lead.proyecto }}
+              </span>
+
+              <span class="drag-handle">⠿</span>
+            </header>
+
+            <h3>{{ lead.nombre }}</h3>
+
+            <div class="contact">
+              <span>{{ lead.telefono }}</span>
+              <span>{{ lead.correo }}</span>
+            </div>
+
+            <footer class="card-footer">
+              <span>{{ lead.origen }}</span>
+              <time>{{ lead.fechaIngreso }}</time>
+            </footer>
+          </article>
+        }
+
+        @if (nuevos.length === 0) {
+          <div class="empty-state">
+            Arrastra un lead aquí
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- CONTACTADOS -->
+    <div class="column">
+      <header class="column-header">
+        <div class="column-name">
+          <span class="status-indicator contacted"></span>
+          <h2>Contactados</h2>
+        </div>
+
+        <span class="counter">
+          {{ contactados.length }}
+        </span>
+      </header>
+
+      <div
+        id="contactados"
+        class="cards"
+        cdkDropList
+        [cdkDropListData]="contactados"
+        (cdkDropListDropped)="drop($event)"
+      >
+        @for (lead of contactados; track lead.id) {
+          <article
+            class="lead-card"
+            cdkDrag
+            [cdkDragData]="lead"
+          >
+            <header class="card-header">
+              <span class="project">
+                {{ lead.proyecto }}
+              </span>
+
+              <span class="drag-handle">⠿</span>
+            </header>
+
+            <h3>{{ lead.nombre }}</h3>
+
+            <div class="contact">
+              <span>{{ lead.telefono }}</span>
+              <span>{{ lead.correo }}</span>
+            </div>
+
+            <footer class="card-footer">
+              <span>{{ lead.origen }}</span>
+              <time>{{ lead.fechaIngreso }}</time>
+            </footer>
+          </article>
+        }
+
+        @if (contactados.length === 0) {
+          <div class="empty-state">
+            Arrastra un lead aquí
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+</main>
