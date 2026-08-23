@@ -1,4 +1,8 @@
-export type LeadStatus = 'NUEVO' | 'CONTACTADO';
+export type LeadStatus =
+  | 'CONTACTO_INICIAL'
+  | 'DISCOVERY'
+  | 'SHOWING'
+  | 'CIERRE';
 
 export interface Lead {
   id: number;
@@ -8,5 +12,6 @@ export interface Lead {
   proyecto: string;
   origen: string;
   fechaIngreso: string;
+  asesorAsignado: string | null;
   status: LeadStatus;
 }

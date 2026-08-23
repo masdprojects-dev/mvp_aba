@@ -15,9 +15,20 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 
-import { Lead } from '../../core/models/lead.model';
+import {
+  Lead,
+  LeadStatus,
+} from '../../core/models/lead.model';
 import { LeadsMock } from '../../core/services/leads-mock';
 import { LeadDetail } from './lead-detail/lead-detail';
+
+interface KanbanColumn {
+  id: string;
+  title: string;
+  status: LeadStatus;
+  indicatorClass: string;
+  leads: Lead[];
+}
 
 @Component({
   selector: 'app-kanban',
@@ -35,30 +46,54 @@ export class Kanban implements OnInit {
   private readonly leadsMock = inject(LeadsMock);
   private readonly cdr = inject(ChangeDetectorRef);
 
-  nuevos: Lead[] = [];
-  contactados: Lead[] = [];
+  readonly columns: KanbanColumn[] = [
+    {
+      id: 'contacto-inicial',
+      title: 'CONTACTO INICIAL',
+      status: 'CONTACTO_INICIAL',
+      indicatorClass: 'initial',
+      leads: [],
+    },
+    {
+      id: 'discovery',
+      title: 'DISCOVERY',
+      status: 'DISCOVERY',
+      indicatorClass: 'discovery',
+      leads: [],
+    },
+    {
+      id: 'showing',
+      title: 'SHOWING',
+      status: 'SHOWING',
+      indicatorClass: 'showing',
+      leads: [],
+    },
+    {
+      id: 'cierre',
+      title: 'CIERRE',
+      status: 'CIERRE',
+      indicatorClass: 'closing',
+      leads: [],
+    },
+  ];
 
   selectedLead: Lead | null = null;
 
-  selectLead(lead: Lead): void {
-    this.selectedLead = lead;
+  get totalLeads(): number {
+    return this.columns.reduce(
+      (total, column) => total + column.leads.length,
+      0,
+    );
   }
-
-  closeLeadDetail(): void {
-  this.selectedLead = null;
-}
 
   ngOnInit(): void {
     this.leadsMock.getLeads().subscribe({
       next: (leads) => {
-
-        this.nuevos = leads.filter(
-          (lead) => lead.status === 'NUEVO',
-        );
-
-        this.contactados = leads.filter(
-          (lead) => lead.status === 'CONTACTADO',
-        );
+        for (const column of this.columns) {
+          column.leads = leads.filter(
+            (lead) => lead.status === column.status,
+          );
+        }
 
         this.cdr.markForCheck();
       },
@@ -67,6 +102,14 @@ export class Kanban implements OnInit {
         console.error('Error al cargar los leads:', error);
       },
     });
+  }
+
+  selectLead(lead: Lead): void {
+    this.selectedLead = lead;
+  }
+
+  closeLeadDetail(): void {
+    this.selectedLead = null;
   }
 
   drop(event: CdkDragDrop<Lead[]>): void {
@@ -88,10 +131,12 @@ export class Kanban implements OnInit {
     );
 
     const lead = event.container.data[event.currentIndex];
+    const destinationColumn = this.columns.find(
+      (column) => column.id === event.container.id,
+    );
 
-    lead.status =
-      event.container.id === 'contactados'
-        ? 'CONTACTADO'
-        : 'NUEVO';
+    if (destinationColumn) {
+      lead.status = destinationColumn.status;
+    }
   }
 }

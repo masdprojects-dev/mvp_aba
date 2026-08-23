@@ -33,6 +33,7 @@ export class LeadDetail implements OnChanges {
   readonly leadForm = this.fb.group({
     nombre: [''],
     proyecto: [''],
+    asesorAsignado: [''],
     telefono: [''],
     correo: [''],
     origen: [''],
@@ -44,6 +45,7 @@ export class LeadDetail implements OnChanges {
       this.leadForm.patchValue({
         nombre: this.lead.nombre,
         proyecto: this.lead.proyecto,
+        asesorAsignado: this.lead.asesorAsignado ?? 'Sin asignar',
         telefono: this.lead.telefono,
         correo: this.lead.correo,
         origen: this.lead.origen,

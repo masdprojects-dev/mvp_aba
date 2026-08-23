@@ -1,139 +1,91 @@
 <main class="crm">
   <section class="page-header">
     <div>
-      <span class="eyebrow">CRM COMERCIAL</span>
+      <span class="eyebrow">CRM ABA</span>
       <h1>Kanban de leads</h1>
-      <p>Gestiona los prospectos y muévelos entre las etapas del proceso comercial.</p>
+      <p>
+        Gestiona los prospectos y muévelos entre las etapas del proceso comercial.
+      </p>
     </div>
 
     <div class="lead-total">
       <span>Total</span>
-      <strong>{{ nuevos.length + contactados.length }}</strong>
+      <strong>{{ totalLeads }}</strong>
     </div>
   </section>
 
   <section class="board" cdkDropListGroup>
-    <!-- NUEVOS -->
-    <div class="column">
-      <header class="column-header">
-        <div class="column-name">
-          <span class="status-indicator"></span>
-          <h2>Nuevos</h2>
-        </div>
+    @for (column of columns; track column.id) {
+      <div class="column">
+        <header class="column-header">
+          <div class="column-name">
+            <span
+              class="status-indicator"
+              [class.initial]="column.indicatorClass === 'initial'"
+              [class.discovery]="column.indicatorClass === 'discovery'"
+              [class.showing]="column.indicatorClass === 'showing'"
+              [class.closing]="column.indicatorClass === 'closing'"
+            ></span>
 
-        <span class="counter">
-          {{ nuevos.length }}
-        </span>
-      </header>
-
-      <div
-        id="nuevos"
-        class="cards"
-        cdkDropList
-        [cdkDropListData]="nuevos"
-        (cdkDropListDropped)="drop($event)"
-      >
-        @for (lead of nuevos; track lead.id) {
-          <article
-            class="lead-card"
-            cdkDrag
-            [cdkDragData]="lead"
-            (click)="selectLead(lead)"
-          >
-            <header class="card-header">
-              <span class="project">
-                {{ lead.proyecto }}
-              </span>
-
-              <span
-  class="drag-handle"
-  cdkDragHandle
-  (click)="$event.stopPropagation()"
->⠿</span>
-            </header>
-
-            <h3>{{ lead.nombre }}</h3>
-
-            <div class="contact">
-              <span>{{ lead.telefono }}</span>
-              <span>{{ lead.correo }}</span>
-            </div>
-
-            <footer class="card-footer">
-              <span>{{ lead.origen }}</span>
-              <time>{{ lead.fechaIngreso }}</time>
-            </footer>
-          </article>
-        }
-
-        @if (nuevos.length === 0) {
-          <div class="empty-state">
-            Arrastra un lead aquí
+            <h2>{{ column.title }}</h2>
           </div>
-        }
-      </div>
-    </div>
 
-    <!-- CONTACTADOS -->
-    <div class="column">
-      <header class="column-header">
-        <div class="column-name">
-          <span class="status-indicator contacted"></span>
-          <h2>Contactados</h2>
-        </div>
+          <span class="counter">
+            {{ column.leads.length }}
+          </span>
+        </header>
 
-        <span class="counter">
-          {{ contactados.length }}
-        </span>
-      </header>
+        <div
+          [id]="column.id"
+          class="cards"
+          cdkDropList
+          [cdkDropListData]="column.leads"
+          (cdkDropListDropped)="drop($event)"
+        >
+          @for (lead of column.leads; track lead.id) {
+            <article
+              class="lead-card"
+              cdkDrag
+              [cdkDragData]="lead"
+              (click)="selectLead(lead)"
+            >
+              <header class="card-header">
+                <span class="project">
+                  {{ lead.proyecto }}
+                </span>
 
-      <div
-        id="contactados"
-        class="cards"
-        cdkDropList
-        [cdkDropListData]="contactados"
-        (cdkDropListDropped)="drop($event)"
-      >
-        @for (lead of contactados; track lead.id) {
-          <article
-            class="lead-card"
-            cdkDrag
-            [cdkDragData]="lead"
-            (click)="selectLead(lead)"
-          >
-            <header class="card-header">
-              <span class="project">
-                {{ lead.proyecto }}
-              </span>
+                <span
+                  class="drag-handle"
+                  cdkDragHandle
+                  (click)="$event.stopPropagation()"
+                >⠿</span>
+              </header>
 
-              <span
-  class="drag-handle"
-  cdkDragHandle
-  (click)="$event.stopPropagation()"
->⠿</span>
-            </header>
+              <h3>{{ lead.nombre }}</h3>
 
-            <h3>{{ lead.nombre }}</h3>
+              <div class="contact">
+                <span>{{ lead.telefono }}</span>
+                <span>{{ lead.correo }}</span>
+                <span class="advisor">
+                  Asesor: {{ lead.asesorAsignado || 'Sin asignar' }}
+                </span>
+              </div>
 
-            <div class="contact">
-              <span>{{ lead.telefono }}</span>
-              <span>{{ lead.correo }}</span>
+              <footer class="card-footer">
+                <span>{{ lead.origen }}</span>
+                <time>{{ lead.fechaIngreso }}</time>
+              </footer>
+            </article>
+          }
+
+          @if (column.leads.length === 0) {
+            <div class="empty-state">
+              Arrastra un lead aquí
             </div>
-
-            <footer class="card-footer">
-              <span>{{ lead.origen }}</span>
-              <time>{{ lead.fechaIngreso }}</time>
-            </footer>
-          </article>
-        }
-
-        @if (contactados.length === 0) {
-          <div class="empty-state">
-            Arrastra un lead aquí
-          </div>
-        }
+          }
+        </div>
       </div>
-    </div>
+    }
   </section>
 </main>
 

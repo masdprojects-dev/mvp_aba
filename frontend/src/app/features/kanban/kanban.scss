@@ -92,7 +92,7 @@
   margin: 0 auto;
 
   display: grid;
-  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, minmax(240px, 1fr));
 
   gap: 24px;
 
@@ -146,8 +146,20 @@
   border-radius: 50%;
 }
 
-.status-indicator.contacted {
+.status-indicator.initial {
+  background: var(--aba-blue);
+}
+
+.status-indicator.discovery {
+  background: #455b89;
+}
+
+.status-indicator.showing {
   background: #8490ab;
+}
+
+.status-indicator.closing {
+  background: #aab2c4;
 }
 
 .counter {
@@ -270,6 +282,14 @@
   line-height: 1.5;
 }
 
+.advisor {
+  margin-top: 5px;
+
+  color: var(--aba-blue-soft);
+
+  font-weight: 600;
+}
+
 .card-footer {
   margin-top: 18px;
   padding-top: 13px;
@@ -350,7 +370,13 @@
 
 /* Responsive */
 
-@media (max-width: 800px) {
+@media (max-width: 1180px) {
+  .board {
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
   .crm {
     padding: 28px 18px;
   }

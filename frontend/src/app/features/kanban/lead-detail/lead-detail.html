@@ -4,7 +4,6 @@
 ></div>
 
 <aside class="lead-detail-panel">
-
   <header class="panel-header">
     <div>
       <span class="eyebrow">
@@ -28,7 +27,6 @@
     class="panel-content"
     [formGroup]="leadForm"
   >
-
     <div class="form-field">
       <label for="proyecto">
         Proyecto
@@ -38,6 +36,19 @@
         id="proyecto"
         type="text"
         formControlName="proyecto"
+        readonly
+      />
+    </div>
+
+    <div class="form-field">
+      <label for="asesorAsignado">
+        Asesor asignado
+      </label>
+
+      <input
+        id="asesorAsignado"
+        type="text"
+        formControlName="asesorAsignado"
         readonly
       />
     </div>
@@ -94,7 +105,5 @@
         readonly
       />
     </div>
-
   </form>
-
 </aside>

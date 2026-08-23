@@ -7,7 +7,8 @@
     "proyecto": "Puerto Madero",
     "origen": "Meta Ads",
     "fechaIngreso": "2026-08-21",
-    "status": "NUEVO"
+    "asesorAsignado": "Daniela Rivas",
+    "status": "CONTACTO_INICIAL"
   },
   {
     "id": 2,
@@ -17,7 +18,8 @@
     "proyecto": "Diana Tower",
     "origen": "Google Ads",
     "fechaIngreso": "2026-08-21",
-    "status": "NUEVO"
+    "asesorAsignado": "Miguel Soto",
+    "status": "CONTACTO_INICIAL"
   },
   {
     "id": 3,
@@ -27,7 +29,8 @@
     "proyecto": "Puerto Madero",
     "origen": "Sitio web",
     "fechaIngreso": "2026-08-20",
-    "status": "NUEVO"
+    "asesorAsignado": null,
+    "status": "DISCOVERY"
   },
   {
     "id": 4,
@@ -37,7 +40,8 @@
     "proyecto": "Diana Tower",
     "origen": "Meta Ads",
     "fechaIngreso": "2026-08-19",
-    "status": "CONTACTADO"
+    "asesorAsignado": "Daniela Rivas",
+    "status": "SHOWING"
   },
   {
     "id": 5,
@@ -47,6 +51,7 @@
     "proyecto": "Puerto Madero",
     "origen": "Referido",
     "fechaIngreso": "2026-08-18",
-    "status": "CONTACTADO"
+    "asesorAsignado": "Miguel Soto",
+    "status": "CIERRE"
   }
 ]
