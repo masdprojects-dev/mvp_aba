@@ -20,6 +20,7 @@ import {
   LeadStatus,
 } from '../../core/models/lead.model';
 import { LeadsMock } from '../../core/services/leads-mock';
+import { KanbanDataService } from '../../core/services/kanban-data.service';
 import { LeadDetail } from './lead-detail/lead-detail';
 
 interface KanbanColumn {
@@ -44,6 +45,7 @@ interface KanbanColumn {
 })
 export class Kanban implements OnInit {
   private readonly leadsMock = inject(LeadsMock);
+  private readonly kanbanDataService = inject(KanbanDataService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   readonly columns: KanbanColumn[] = [
@@ -87,6 +89,41 @@ export class Kanban implements OnInit {
   }
 
   ngOnInit(): void {
+    // -----------------------------------------------------------------------
+    // Conexión a Firebase Firestore — console.log de diagnóstico
+    // -----------------------------------------------------------------------
+
+    this.kanbanDataService.getLeads().subscribe({
+      next: (leads) => {
+        console.log('Datos de Leads:', leads);
+      },
+      error: (error) => {
+        console.error('Error al obtener Leads desde Firestore:', error);
+      },
+    });
+
+    this.kanbanDataService.getAsesoras().subscribe({
+      next: (asesoras) => {
+        console.log('Datos de Asesoras:', asesoras);
+      },
+      error: (error) => {
+        console.error('Error al obtener Asesoras desde Firestore:', error);
+      },
+    });
+
+    this.kanbanDataService.getProyectos().subscribe({
+      next: (proyectos) => {
+        console.log('Datos de Proyectos:', proyectos);
+      },
+      error: (error) => {
+        console.error('Error al obtener Proyectos desde Firestore:', error);
+      },
+    });
+
+    // -----------------------------------------------------------------------
+    // Carga de datos mock para renderizar las columnas del tablero
+    // -----------------------------------------------------------------------
+
     this.leadsMock.getLeads().subscribe({
       next: (leads) => {
         for (const column of this.columns) {
