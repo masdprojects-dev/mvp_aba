@@ -1,92 +1,156 @@
 <main class="crm">
-  <section class="page-header">
-    <div>
-      <span class="eyebrow">CRM ABA</span>
-      <h1>Kanban de leads</h1>
-      <p>
-        Gestiona los prospectos y muévelos entre las etapas del proceso comercial.
-      </p>
-    </div>
+  <section class="brand-hero">
+    <div class="brand-hero__content">
+      <div class="brand-block">
+        <div class="brand-logo-wrap">
+          <img
+            class="brand-logo"
+            src="/assets/branding/aba-logo.jpg"
+            alt="Grupo ABA"
+          />
+        </div>
 
-    <div class="lead-total">
-      <span>Total</span>
-      <strong>{{ totalLeads }}</strong>
-    </div>
-  </section>
-
-  <section class="board" cdkDropListGroup>
-    @for (column of columns; track column.id) {
-      <div class="column">
-        <header class="column-header">
-          <div class="column-name">
-            <span
-              class="status-indicator"
-              [class.initial]="column.indicatorClass === 'initial'"
-              [class.discovery]="column.indicatorClass === 'discovery'"
-              [class.showing]="column.indicatorClass === 'showing'"
-              [class.closing]="column.indicatorClass === 'closing'"
-            ></span>
-
-            <h2>{{ column.title }}</h2>
-          </div>
-
-          <span class="counter">
-            {{ column.leads.length }}
-          </span>
-        </header>
-
-        <div
-          [id]="column.id"
-          class="cards"
-          cdkDropList
-          [cdkDropListData]="column.leads"
-          (cdkDropListDropped)="drop($event)"
-        >
-          @for (lead of column.leads; track lead.id) {
-            <article
-              class="lead-card"
-              cdkDrag
-              [cdkDragData]="lead"
-              (click)="selectLead(lead)"
-            >
-              <header class="card-header">
-                <span class="project">
-                  {{ lead.proyecto }}
-                </span>
-
-                <span
-                  class="drag-handle"
-                  cdkDragHandle
-                  (click)="$event.stopPropagation()"
-                >⠿</span>
-              </header>
-
-              <h3>{{ lead.nombre }}</h3>
-
-              <div class="contact">
-                <span>{{ lead.telefono }}</span>
-                <span>{{ lead.correo }}</span>
-                <span class="advisor">
-                  Asesor: {{ lead.asesorAsignado || 'Sin asignar' }}
-                </span>
-              </div>
-
-              <footer class="card-footer">
-                <span>{{ lead.origen }}</span>
-                <time>{{ lead.fechaIngreso }}</time>
-              </footer>
-            </article>
-          }
-
-          @if (column.leads.length === 0) {
-            <div class="empty-state">
-              Arrastra un lead aquí
-            </div>
-          }
+        <div class="brand-copy">
+          <span class="eyebrow">GRUPO ABA</span>
+          <h1>Kanban de leads</h1>
+          <p>
+            Gestiona los prospectos, visualiza el avance comercial y mueve los
+            leads entre las etapas del proceso de venta.
+          </p>
         </div>
       </div>
-    }
+
+      <div class="hero-summary">
+        <span>Total de leads</span>
+        <strong>{{ totalLeads }}</strong>
+      </div>
+    </div>
   </section>
+
+  @if (saveError) {
+    <div class="save-error" role="status" aria-live="polite">
+      {{ saveError }}
+    </div>
+  }
+
+  @if (isLoading) {
+    <section class="feedback-state loading-state" aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+
+      <div>
+        <strong>Cargando leads</strong>
+        <span>Obteniendo información del CRM...</span>
+      </div>
+    </section>
+  } @else if (loadError) {
+    <section class="feedback-state error-state" role="alert">
+      <div>
+        <strong>No se pudieron cargar los leads</strong>
+        <span>{{ loadError }}</span>
+      </div>
+
+      <button type="button" (click)="retryLoad()">
+        Reintentar
+      </button>
+    </section>
+  } @else {
+    <section class="board-shell">
+      <div class="board-title">
+        <div>
+          <span class="board-title__eyebrow">Pipeline comercial</span>
+          <h2>Seguimiento visual del proceso</h2>
+        </div>
+      </div>
+
+      <section class="board" cdkDropListGroup>
+        @for (column of columns; track column.id) {
+          <div class="column">
+            <header class="column-header">
+              <div class="column-name">
+                <span
+                  class="status-indicator"
+                  [class.initial]="column.indicatorClass === 'initial'"
+                  [class.discovery]="column.indicatorClass === 'discovery'"
+                  [class.showing]="column.indicatorClass === 'showing'"
+                  [class.closing]="column.indicatorClass === 'closing'"
+                ></span>
+
+                <h3>{{ column.title }}</h3>
+              </div>
+
+              <span class="counter">
+                {{ column.leads.length }}
+              </span>
+            </header>
+
+            <div
+              [id]="column.id"
+              class="cards"
+              cdkDropList
+              [cdkDropListData]="column.leads"
+              (cdkDropListDropped)="drop($event)"
+            >
+              @for (lead of column.leads; track lead.id) {
+                <article
+                  class="lead-card"
+                  cdkDrag
+                  [cdkDragData]="lead"
+                  [cdkDragDisabled]="isLeadUpdating(lead.id)"
+                  [class.is-updating]="isLeadUpdating(lead.id)"
+                  (click)="selectLead(lead)"
+                >
+                  <header class="card-header">
+                    <span class="project" [title]="lead.proyecto">
+                      {{ lead.proyecto }}
+                    </span>
+
+                    <button
+                      type="button"
+                      class="drag-handle"
+                      cdkDragHandle
+                      [disabled]="isLeadUpdating(lead.id)"
+                      (click)="$event.stopPropagation()"
+                      [attr.aria-label]="'Mover lead ' + lead.nombre"
+                    >
+                      ⠿
+                    </button>
+                  </header>
+
+                  <h4>{{ lead.nombre }}</h4>
+
+                  <div class="contact">
+                    <span>{{ lead.telefono }}</span>
+                    <span>{{ lead.correo }}</span>
+                    <span class="advisor">
+                      Asesor: {{ lead.asesorAsignado || 'Sin asignar' }}
+                    </span>
+                  </div>
+
+                  <footer class="card-footer">
+                    <span>{{ lead.origen }}</span>
+                    <time>{{ lead.fechaIngreso }}</time>
+                  </footer>
+
+                  @if (isLeadUpdating(lead.id)) {
+                    <div class="card-saving" aria-live="polite">
+                      <span class="mini-spinner" aria-hidden="true"></span>
+                      Guardando cambio...
+                    </div>
+                  }
+                </article>
+              }
+
+              @if (column.leads.length === 0) {
+                <div class="empty-state">
+                  Arrastra un lead aquí
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </section>
+    </section>
+  }
 </main>
 
 @if (selectedLead) {

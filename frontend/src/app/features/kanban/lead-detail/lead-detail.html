@@ -1,16 +1,36 @@
 <div
   class="panel-backdrop"
   (click)="close()"
+  aria-hidden="true"
 ></div>
 
-<aside class="lead-detail-panel">
+<aside
+  #panel
+  class="lead-detail-panel"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="lead-detail-title"
+  tabindex="-1"
+>
   <header class="panel-header">
-    <div>
-      <span class="eyebrow">
-        DETALLE DEL PROSPECTO
-      </span>
+    <div class="panel-brand">
+      <div class="panel-brand__logo-wrap">
+        <img
+          class="panel-brand__logo"
+          src="/assets/branding/aba-logo.jpg"
+          alt="Grupo ABA"
+        />
+      </div>
 
-      <h2>{{ leadForm.controls.nombre.value }}</h2>
+      <div class="panel-title">
+        <span class="eyebrow">
+          DETALLE DEL PROSPECTO
+        </span>
+
+        <h2 id="lead-detail-title">
+          {{ leadForm.controls.nombre.value }}
+        </h2>
+      </div>
     </div>
 
     <button

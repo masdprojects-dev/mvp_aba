@@ -15,6 +15,8 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 
+import { finalize } from 'rxjs';
+
 import {
   Lead,
   LeadStatus,
@@ -80,6 +82,12 @@ export class Kanban implements OnInit {
 
   selectedLead: Lead | null = null;
 
+  isLoading = true;
+  loadError: string | null = null;
+  saveError: string | null = null;
+
+  private readonly updatingLeadIds = new Set<Lead['id']>();
+
   get totalLeads(): number {
     return this.columns.reduce(
       (total, column) => total + column.leads.length,
@@ -91,7 +99,18 @@ export class Kanban implements OnInit {
     this.cargarLeads();
   }
 
+  retryLoad(): void {
+    this.cargarLeads();
+  }
+
+  isLeadUpdating(leadId: Lead['id']): boolean {
+    return this.updatingLeadIds.has(leadId);
+  }
+
   private cargarLeads(): void {
+    this.isLoading = true;
+    this.loadError = null;
+
     this.kanbanDataService.getLeads().subscribe({
       next: (leads) => {
         console.log('Leads reales de Firebase:', leads);
@@ -102,6 +121,7 @@ export class Kanban implements OnInit {
           );
         }
 
+        this.isLoading = false;
         this.cdr.markForCheck();
       },
 
@@ -110,11 +130,21 @@ export class Kanban implements OnInit {
           'Error al obtener los leads desde Firebase:',
           error,
         );
+
+        this.isLoading = false;
+        this.loadError =
+          'Verifica la conexión e intenta cargar el tablero nuevamente.';
+
+        this.cdr.markForCheck();
       },
     });
   }
 
   selectLead(lead: Lead): void {
+    if (this.isLeadUpdating(lead.id)) {
+      return;
+    }
+
     this.selectedLead = lead;
   }
 
@@ -123,7 +153,6 @@ export class Kanban implements OnInit {
   }
 
   drop(event: CdkDragDrop<Lead[]>): void {
-    // Movimiento dentro de la misma columna
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -136,7 +165,9 @@ export class Kanban implements OnInit {
 
     const lead = event.previousContainer.data[event.previousIndex];
 
-    const previousStatus = lead.status;
+    if (!lead || this.isLeadUpdating(lead.id)) {
+      return;
+    }
 
     const destinationColumn = this.columns.find(
       (column) => column.id === event.container.id,
@@ -146,23 +177,36 @@ export class Kanban implements OnInit {
       return;
     }
 
-    // Movimiento visual inmediato
+    const previousStatus = lead.status;
+    const previousIndex = event.previousIndex;
+    const previousContainer = event.previousContainer;
+    const destinationContainer = event.container;
+
+    this.saveError = null;
+
+    // Movimiento visual inmediato.
     transferArrayItem(
-      event.previousContainer.data,
-      event.container.data,
-      event.previousIndex,
+      previousContainer.data,
+      destinationContainer.data,
+      previousIndex,
       event.currentIndex,
     );
 
     lead.status = destinationColumn.status;
+    this.updatingLeadIds.add(lead.id);
 
     this.cdr.markForCheck();
 
-    // Guardar el nuevo estado en Firebase
     this.kanbanDataService
       .updateLeadStatus(
         lead.id,
         destinationColumn.status,
+      )
+      .pipe(
+        finalize(() => {
+          this.updatingLeadIds.delete(lead.id);
+          this.cdr.markForCheck();
+        }),
       )
       .subscribe({
         next: () => {
@@ -177,16 +221,34 @@ export class Kanban implements OnInit {
             error,
           );
 
-          // Si Firebase falla, regresamos visualmente
-          // la tarjeta a su columna original.
-          transferArrayItem(
-            event.container.data,
-            event.previousContainer.data,
-            event.currentIndex,
-            event.previousIndex,
+          /*
+           * Buscamos la posición real de la tarjeta antes de revertirla.
+           * Así evitamos mover una tarjeta equivocada si otra tarjeta
+           * cambió de posición mientras Firebase respondía.
+           */
+          const currentLeadIndex = destinationContainer.data.findIndex(
+            (item) => item.id === lead.id,
           );
 
+          if (currentLeadIndex >= 0) {
+            const restoreIndex = Math.min(
+              previousIndex,
+              previousContainer.data.length,
+            );
+
+            transferArrayItem(
+              destinationContainer.data,
+              previousContainer.data,
+              currentLeadIndex,
+              restoreIndex,
+            );
+          }
+
           lead.status = previousStatus;
+
+          this.saveError =
+            `No se pudo mover a ${lead.nombre}. ` +
+            'La tarjeta regresó a su etapa anterior.';
 
           this.cdr.markForCheck();
         },
