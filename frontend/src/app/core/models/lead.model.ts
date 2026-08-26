@@ -5,7 +5,7 @@ export type LeadStatus =
   | 'CIERRE';
 
 export interface Lead {
-  id: number;
+  id: string;
   nombre: string;
   telefono: string;
   correo: string;

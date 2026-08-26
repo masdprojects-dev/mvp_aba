@@ -19,7 +19,7 @@ import {
   Lead,
   LeadStatus,
 } from '../../core/models/lead.model';
-import { LeadsMock } from '../../core/services/leads-mock';
+
 import { KanbanDataService } from '../../core/services/kanban-data.service';
 import { LeadDetail } from './lead-detail/lead-detail';
 
@@ -44,7 +44,6 @@ interface KanbanColumn {
   styleUrl: './kanban.scss',
 })
 export class Kanban implements OnInit {
-  private readonly leadsMock = inject(LeadsMock);
   private readonly kanbanDataService = inject(KanbanDataService);
   private readonly cdr = inject(ChangeDetectorRef);
 
@@ -89,43 +88,14 @@ export class Kanban implements OnInit {
   }
 
   ngOnInit(): void {
-    // -----------------------------------------------------------------------
-    // Conexión a Firebase Firestore — console.log de diagnóstico
-    // -----------------------------------------------------------------------
+    this.cargarLeads();
+  }
 
+  private cargarLeads(): void {
     this.kanbanDataService.getLeads().subscribe({
       next: (leads) => {
-        console.log('Datos de Leads:', leads);
-      },
-      error: (error) => {
-        console.error('Error al obtener Leads desde Firestore:', error);
-      },
-    });
+        console.log('Leads reales de Firebase:', leads);
 
-    this.kanbanDataService.getAsesoras().subscribe({
-      next: (asesoras) => {
-        console.log('Datos de Asesoras:', asesoras);
-      },
-      error: (error) => {
-        console.error('Error al obtener Asesoras desde Firestore:', error);
-      },
-    });
-
-    this.kanbanDataService.getProyectos().subscribe({
-      next: (proyectos) => {
-        console.log('Datos de Proyectos:', proyectos);
-      },
-      error: (error) => {
-        console.error('Error al obtener Proyectos desde Firestore:', error);
-      },
-    });
-
-    // -----------------------------------------------------------------------
-    // Carga de datos mock para renderizar las columnas del tablero
-    // -----------------------------------------------------------------------
-
-    this.leadsMock.getLeads().subscribe({
-      next: (leads) => {
         for (const column of this.columns) {
           column.leads = leads.filter(
             (lead) => lead.status === column.status,
@@ -136,7 +106,10 @@ export class Kanban implements OnInit {
       },
 
       error: (error) => {
-        console.error('Error al cargar los leads:', error);
+        console.error(
+          'Error al obtener los leads desde Firebase:',
+          error,
+        );
       },
     });
   }
@@ -150,6 +123,7 @@ export class Kanban implements OnInit {
   }
 
   drop(event: CdkDragDrop<Lead[]>): void {
+    // Movimiento dentro de la misma columna
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -160,6 +134,19 @@ export class Kanban implements OnInit {
       return;
     }
 
+    const lead = event.previousContainer.data[event.previousIndex];
+
+    const previousStatus = lead.status;
+
+    const destinationColumn = this.columns.find(
+      (column) => column.id === event.container.id,
+    );
+
+    if (!destinationColumn) {
+      return;
+    }
+
+    // Movimiento visual inmediato
     transferArrayItem(
       event.previousContainer.data,
       event.container.data,
@@ -167,13 +154,42 @@ export class Kanban implements OnInit {
       event.currentIndex,
     );
 
-    const lead = event.container.data[event.currentIndex];
-    const destinationColumn = this.columns.find(
-      (column) => column.id === event.container.id,
-    );
+    lead.status = destinationColumn.status;
 
-    if (destinationColumn) {
-      lead.status = destinationColumn.status;
-    }
+    this.cdr.markForCheck();
+
+    // Guardar el nuevo estado en Firebase
+    this.kanbanDataService
+      .updateLeadStatus(
+        lead.id,
+        destinationColumn.status,
+      )
+      .subscribe({
+        next: () => {
+          console.log(
+            `Lead ${lead.id} actualizado a ${destinationColumn.status}`,
+          );
+        },
+
+        error: (error) => {
+          console.error(
+            'Error al actualizar el estado del lead:',
+            error,
+          );
+
+          // Si Firebase falla, regresamos visualmente
+          // la tarjeta a su columna original.
+          transferArrayItem(
+            event.container.data,
+            event.previousContainer.data,
+            event.currentIndex,
+            event.previousIndex,
+          );
+
+          lead.status = previousStatus;
+
+          this.cdr.markForCheck();
+        },
+      });
   }
 }
