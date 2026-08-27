@@ -21,7 +21,10 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 
-import { Lead } from '../../../core/models/lead.model';
+import {
+  Lead,
+  LeadStatus,
+} from '../../../core/models/lead.model';
 
 @Component({
   selector: 'app-lead-detail',
@@ -48,25 +51,47 @@ export class LeadDetail
   @Output() closePanel = new EventEmitter<void>();
 
   readonly leadForm = this.fb.nonNullable.group({
+    leadId: [''],
     nombre: [''],
+    estado: [''],
     proyecto: [''],
+    proyectoId: [''],
     asesorAsignado: [''],
+    asesorTelefono: [''],
+    fechaAsignacion: [''],
     telefono: [''],
     correo: [''],
     origen: [''],
+    canalOrigen: [''],
+    fuenteOrigen: [''],
+    adHeadline: [''],
+    adId: [''],
     fechaIngreso: [''],
+    primerMensaje: [''],
   });
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['lead'] && this.lead) {
       this.leadForm.patchValue({
+        leadId: this.lead.leadIdOrigen || this.lead.id,
         nombre: this.lead.nombre,
+        estado: this.estadoLabel(this.lead.status),
         proyecto: this.lead.proyecto,
+        proyectoId: this.lead.proyectoId,
         asesorAsignado: this.lead.asesorAsignado ?? 'Sin asignar',
+        asesorTelefono: this.lead.asesorTelefono,
+        fechaAsignacion: this.lead.fechaAsignacion,
         telefono: this.lead.telefono,
         correo: this.lead.correo,
         origen: this.lead.origen,
-        fechaIngreso: this.lead.fechaIngreso,
+        canalOrigen: this.lead.canalOrigen,
+        fuenteOrigen: this.lead.fuenteOrigen,
+        adHeadline: this.lead.adHeadline,
+        adId: this.lead.adId,
+        fechaIngreso:
+          this.lead.fechaIngresoCompleta ||
+          this.lead.fechaIngreso,
+        primerMensaje: this.lead.primerMensaje,
       });
     }
   }
@@ -107,5 +132,23 @@ export class LeadDetail
 
   close(): void {
     this.closePanel.emit();
+  }
+
+  private estadoLabel(
+    status: LeadStatus,
+  ): string {
+    switch (status) {
+      case 'CONTACTO_INICIAL':
+        return 'Contacto inicial';
+
+      case 'DISCOVERY':
+        return 'Discovery';
+
+      case 'SHOWING':
+        return 'Showing';
+
+      case 'CIERRE':
+        return 'Cierre';
+    }
   }
 }

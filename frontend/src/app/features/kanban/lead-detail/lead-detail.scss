@@ -43,7 +43,7 @@
   top: 0;
   right: 0;
 
-  width: min(440px, 100vw);
+  width: min(560px, 100vw);
   height: 100vh;
   height: 100dvh;
   max-height: 100dvh;
@@ -187,12 +187,12 @@
   padding:
     24px
     max(24px, env(safe-area-inset-right))
-    max(24px, env(safe-area-inset-bottom))
+    max(30px, env(safe-area-inset-bottom))
     max(24px, env(safe-area-inset-left));
 
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 22px;
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -205,9 +205,54 @@
   -webkit-overflow-scrolling: touch;
 }
 
+.lead-data {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.section-heading {
+  padding-bottom: 10px;
+
+  border-bottom: 1px solid var(--aba-gray-200);
+}
+
+.section-heading span {
+  display: block;
+  margin-bottom: 4px;
+
+  color: var(--aba-gray-700);
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.section-heading h3 {
+  margin: 0;
+
+  color: var(--aba-black);
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
 .form-field {
   min-width: 0;
-  padding: 15px 16px;
+  padding: 14px 15px;
 
   display: flex;
   flex-direction: column;
@@ -216,22 +261,25 @@
   background: var(--aba-white);
 
   border: 1px solid var(--aba-gray-300);
-  border-radius: 15px;
+  border-radius: 14px;
+}
+
+.form-field--wide {
+  grid-column: 1 / -1;
 }
 
 .form-field label {
   color: var(--aba-gray-700);
 
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
 }
 
-.form-field input {
+.form-field input,
+.form-field textarea {
   width: 100%;
   min-width: 0;
   padding: 0;
-
-  overflow: hidden;
 
   background: transparent;
   color: var(--aba-black);
@@ -242,12 +290,26 @@
   cursor: default;
 
   font: inherit;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
+}
+
+.form-field input {
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.form-field input:focus-visible {
+.form-field textarea {
+  resize: none;
+  overflow: auto;
+}
+
+.form-field input::placeholder {
+  color: var(--aba-gray-500);
+}
+
+.form-field input:focus-visible,
+.form-field textarea:focus-visible {
   outline: 2px solid rgba(0, 0, 0, 0.18);
   outline-offset: 4px;
   border-radius: 2px;
@@ -257,7 +319,8 @@
   align-items: flex-start;
 }
 
-.source-input {
+.source-input,
+.status-input {
   width: auto !important;
   max-width: 100%;
 
@@ -276,6 +339,102 @@
   text-overflow: ellipsis;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+.form-field--message {
+  background: var(--aba-gray-100);
+}
+
+/* Historial */
+
+.history-section {
+  padding-top: 2px;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-item {
+  position: relative;
+
+  min-height: 78px;
+  padding-left: 28px;
+  padding-bottom: 14px;
+}
+
+.timeline-item::before {
+  content: '';
+
+  position: absolute;
+  top: 12px;
+  bottom: -2px;
+  left: 6px;
+
+  width: 1px;
+
+  background: var(--aba-gray-300);
+}
+
+.timeline-item.is-last::before {
+  display: none;
+}
+
+.timeline-marker {
+  position: absolute;
+  top: 8px;
+  left: 0;
+
+  width: 13px;
+  height: 13px;
+
+  background: var(--aba-black);
+
+  border: 3px solid var(--aba-white);
+  border-radius: 50%;
+
+  box-shadow: 0 0 0 1px var(--aba-black);
+}
+
+.timeline-card {
+  padding: 13px 14px;
+
+  background: #fafafa;
+
+  border: 1px solid var(--aba-gray-200);
+  border-radius: 14px;
+}
+
+.timeline-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.timeline-card__header strong {
+  color: var(--aba-black);
+
+  font-size: 12px;
+}
+
+.timeline-card__header time {
+  flex: 0 0 auto;
+
+  color: var(--aba-gray-700);
+
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.timeline-card p {
+  margin: 6px 0 0;
+
+  color: var(--aba-gray-700);
+
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 @keyframes slide-in {
@@ -330,15 +489,24 @@
       max(20px, env(safe-area-inset-bottom))
       max(16px, env(safe-area-inset-left));
   }
+
+  .detail-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .form-field--wide {
+    grid-column: auto;
+  }
 }
 
 @media (max-width: 380px) {
   .panel-brand {
     flex-direction: column;
+    gap: 14px;
   }
 
-  .panel-content {
-    gap: 14px;
+  .timeline-card__header {
+    flex-direction: column;
   }
 }
 

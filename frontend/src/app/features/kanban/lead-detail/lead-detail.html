@@ -43,87 +43,302 @@
     </button>
   </header>
 
-  <form
-    class="panel-content"
-    [formGroup]="leadForm"
-  >
-    <div class="form-field">
-      <label for="proyecto">
-        Proyecto
-      </label>
+  <div class="panel-content">
+    <form
+      class="lead-data"
+      [formGroup]="leadForm"
+    >
+      <section class="detail-section">
+        <div class="section-heading">
+          <span>Información general</span>
+          <h3>Datos del lead</h3>
+        </div>
 
-      <input
-        id="proyecto"
-        type="text"
-        formControlName="proyecto"
-        readonly
-      />
-    </div>
+        <div class="detail-grid">
+          <div class="form-field form-field--wide">
+            <label for="leadId">
+              ID del lead
+            </label>
 
-    <div class="form-field">
-      <label for="asesorAsignado">
-        Asesor asignado
-      </label>
+            <input
+              id="leadId"
+              type="text"
+              formControlName="leadId"
+              readonly
+            />
+          </div>
 
-      <input
-        id="asesorAsignado"
-        type="text"
-        formControlName="asesorAsignado"
-        readonly
-      />
-    </div>
+          <div class="form-field">
+            <label for="estado">
+              Estado actual
+            </label>
 
-    <div class="form-field">
-      <label for="telefono">
-        Teléfono
-      </label>
+            <input
+              id="estado"
+              class="status-input"
+              type="text"
+              formControlName="estado"
+              readonly
+            />
+          </div>
 
-      <input
-        id="telefono"
-        type="text"
-        formControlName="telefono"
-        readonly
-      />
-    </div>
+          <div class="form-field">
+            <label for="fechaIngreso">
+              Fecha de ingreso
+            </label>
 
-    <div class="form-field">
-      <label for="correo">
-        Correo
-      </label>
+            <input
+              id="fechaIngreso"
+              type="text"
+              formControlName="fechaIngreso"
+              readonly
+            />
+          </div>
 
-      <input
-        id="correo"
-        type="email"
-        formControlName="correo"
-        readonly
-      />
-    </div>
+          <div class="form-field form-field--wide">
+            <label for="proyecto">
+              Proyecto
+            </label>
 
-    <div class="form-field source-field">
-      <label for="origen">
-        Origen publicitario
-      </label>
+            <input
+              id="proyecto"
+              type="text"
+              formControlName="proyecto"
+              readonly
+            />
+          </div>
 
-      <input
-        id="origen"
-        class="source-input"
-        type="text"
-        formControlName="origen"
-        readonly
-      />
-    </div>
+          @if (leadForm.controls.proyectoId.value) {
+            <div class="form-field form-field--wide">
+              <label for="proyectoId">
+                ID de proyecto
+              </label>
 
-    <div class="form-field">
-      <label for="fechaIngreso">
-        Fecha de ingreso
-      </label>
+              <input
+                id="proyectoId"
+                type="text"
+                formControlName="proyectoId"
+                readonly
+              />
+            </div>
+          }
+        </div>
+      </section>
 
-      <input
-        id="fechaIngreso"
-        type="text"
-        formControlName="fechaIngreso"
-        readonly
-      />
-    </div>
-  </form>
+      <section class="detail-section">
+        <div class="section-heading">
+          <span>Contacto y asignación</span>
+          <h3>Seguimiento comercial</h3>
+        </div>
+
+        <div class="detail-grid">
+          <div class="form-field form-field--wide">
+            <label for="asesorAsignado">
+              Asesor asignado
+            </label>
+
+            <input
+              id="asesorAsignado"
+              type="text"
+              formControlName="asesorAsignado"
+              readonly
+            />
+          </div>
+
+          @if (leadForm.controls.asesorTelefono.value) {
+            <div class="form-field">
+              <label for="asesorTelefono">
+                Teléfono del asesor
+              </label>
+
+              <input
+                id="asesorTelefono"
+                type="text"
+                formControlName="asesorTelefono"
+                readonly
+              />
+            </div>
+          }
+
+          @if (leadForm.controls.fechaAsignacion.value) {
+            <div class="form-field">
+              <label for="fechaAsignacion">
+                Fecha de asignación
+              </label>
+
+              <input
+                id="fechaAsignacion"
+                type="text"
+                formControlName="fechaAsignacion"
+                readonly
+              />
+            </div>
+          }
+
+          <div class="form-field">
+            <label for="telefono">
+              Teléfono
+            </label>
+
+            <input
+              id="telefono"
+              type="text"
+              formControlName="telefono"
+              readonly
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="correo">
+              Correo
+            </label>
+
+            <input
+              id="correo"
+              type="email"
+              formControlName="correo"
+              readonly
+              [placeholder]="leadForm.controls.correo.value ? '' : 'Sin correo'"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <div class="section-heading">
+          <span>Atribución</span>
+          <h3>Origen publicitario</h3>
+        </div>
+
+        <div class="detail-grid">
+          <div class="form-field source-field form-field--wide">
+            <label for="origen">
+              Origen principal
+            </label>
+
+            <input
+              id="origen"
+              class="source-input"
+              type="text"
+              formControlName="origen"
+              readonly
+            />
+          </div>
+
+          @if (leadForm.controls.canalOrigen.value) {
+            <div class="form-field">
+              <label for="canalOrigen">
+                Canal
+              </label>
+
+              <input
+                id="canalOrigen"
+                type="text"
+                formControlName="canalOrigen"
+                readonly
+              />
+            </div>
+          }
+
+          @if (leadForm.controls.fuenteOrigen.value) {
+            <div class="form-field">
+              <label for="fuenteOrigen">
+                Fuente
+              </label>
+
+              <input
+                id="fuenteOrigen"
+                type="text"
+                formControlName="fuenteOrigen"
+                readonly
+              />
+            </div>
+          }
+
+          @if (leadForm.controls.adHeadline.value) {
+            <div class="form-field form-field--wide">
+              <label for="adHeadline">
+                Anuncio / headline
+              </label>
+
+              <input
+                id="adHeadline"
+                type="text"
+                formControlName="adHeadline"
+                readonly
+              />
+            </div>
+          }
+
+          @if (leadForm.controls.adId.value) {
+            <div class="form-field form-field--wide">
+              <label for="adId">
+                ID del anuncio
+              </label>
+
+              <input
+                id="adId"
+                type="text"
+                formControlName="adId"
+                readonly
+              />
+            </div>
+          }
+        </div>
+      </section>
+
+      @if (leadForm.controls.primerMensaje.value) {
+        <section class="detail-section">
+          <div class="section-heading">
+            <span>Primer contacto</span>
+            <h3>Mensaje inicial</h3>
+          </div>
+
+          <div class="form-field form-field--message">
+            <label for="primerMensaje">
+              Mensaje recibido
+            </label>
+
+            <textarea
+              id="primerMensaje"
+              formControlName="primerMensaje"
+              readonly
+              rows="4"
+            ></textarea>
+          </div>
+        </section>
+      }
+    </form>
+
+    <section class="detail-section history-section">
+      <div class="section-heading">
+        <span>Trazabilidad</span>
+        <h3>Historial del lead</h3>
+      </div>
+
+      <div class="timeline">
+        @for (item of lead.historial; track item.id; let isLast = $last) {
+          <article class="timeline-item" [class.is-last]="isLast">
+            <div class="timeline-marker" aria-hidden="true"></div>
+
+            <div class="timeline-card">
+              <div class="timeline-card__header">
+                <strong>
+                  {{
+                    item.tipo === 'REGISTRO'
+                      ? 'Lead registrado'
+                      : 'Cambio de etapa'
+                  }}
+                </strong>
+
+                <time>{{ item.fecha }}</time>
+              </div>
+
+              <p>{{ item.descripcion }}</p>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+  </div>
 </aside>

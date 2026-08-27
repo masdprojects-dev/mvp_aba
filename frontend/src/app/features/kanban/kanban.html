@@ -60,6 +60,14 @@
           <span class="board-title__eyebrow">Pipeline comercial</span>
           <h2>Seguimiento visual del proceso</h2>
         </div>
+
+        <button
+          type="button"
+          class="advisor-manager-button"
+          (click)="openAsesoraManager()"
+        >
+          Administrar asesores
+        </button>
       </div>
 
       <section class="board" cdkDropListGroup>
@@ -120,7 +128,11 @@
 
                   <div class="contact">
                     <span>{{ lead.telefono }}</span>
-                    <span>{{ lead.correo }}</span>
+
+                    @if (lead.correo) {
+                      <span>{{ lead.correo }}</span>
+                    }
+
                     <span class="advisor">
                       Asesor: {{ lead.asesorAsignado || 'Sin asignar' }}
                     </span>
@@ -158,4 +170,185 @@
     [lead]="selectedLead"
     (closePanel)="closeLeadDetail()"
   />
+}
+
+@if (asesoraManagerOpen) {
+  <div
+    class="advisor-modal-backdrop"
+    (click)="closeAsesoraManager()"
+    aria-hidden="true"
+  ></div>
+
+  <section
+    class="advisor-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="advisor-modal-title"
+  >
+    <header class="advisor-modal__header">
+      <div>
+        <span class="advisor-modal__eyebrow">CRM ABA</span>
+        <h2 id="advisor-modal-title">Administración de asesores</h2>
+        <p>
+          Registra nuevos asesores o modifica la información de los existentes.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="advisor-modal__close"
+        (click)="closeAsesoraManager()"
+        [disabled]="asesoraSaving"
+        aria-label="Cerrar administración de asesores"
+      >
+        ×
+      </button>
+    </header>
+
+    <div class="advisor-modal__content">
+      <section class="advisor-list-section">
+        <div class="advisor-section-heading">
+          <div>
+            <span>Equipo comercial</span>
+            <h3>Asesores registrados</h3>
+          </div>
+
+          <strong>{{ asesoras.length }}</strong>
+        </div>
+
+        @if (asesorasLoading) {
+          <div class="advisor-feedback">
+            Cargando asesores...
+          </div>
+        } @else if (asesorasLoadError) {
+          <div class="advisor-feedback advisor-feedback--error">
+            {{ asesorasLoadError }}
+          </div>
+        } @else {
+          <div class="advisor-list">
+            @for (asesora of asesoras; track asesora.id || asesora.nombre) {
+              <article
+                class="advisor-row"
+                [class.is-editing]="editingAsesoraId === asesora.id"
+              >
+                <div class="advisor-row__data">
+                  <strong>{{ asesora.nombre }}</strong>
+
+                  @if (asesora.email) {
+                    <span>{{ asesora.email }}</span>
+                  }
+
+                  @if (asesora.telefono) {
+                    <span>{{ asesora.telefono }}</span>
+                  }
+                </div>
+
+                <button
+                  type="button"
+                  (click)="editAsesora(asesora)"
+                  [disabled]="asesoraSaving"
+                >
+                  Editar
+                </button>
+              </article>
+            }
+
+            @if (asesoras.length === 0) {
+              <div class="advisor-feedback">
+                Aún no hay asesores registrados.
+              </div>
+            }
+          </div>
+        }
+      </section>
+
+      <section class="advisor-form-section">
+        <div class="advisor-section-heading">
+          <div>
+            <span>
+              {{ isEditingAsesora ? 'Edición' : 'Nuevo registro' }}
+            </span>
+            <h3>
+              {{ isEditingAsesora ? 'Modificar asesor' : 'Registrar asesor' }}
+            </h3>
+          </div>
+        </div>
+
+        <form
+          class="advisor-form"
+          [formGroup]="asesoraForm"
+          (ngSubmit)="saveAsesora()"
+        >
+          <label>
+            <span>Nombre *</span>
+            <input
+              type="text"
+              formControlName="nombre"
+              autocomplete="name"
+              [disabled]="asesoraSaving"
+            />
+          </label>
+
+          <label>
+            <span>Correo</span>
+            <input
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+              [disabled]="asesoraSaving"
+            />
+          </label>
+
+          <label>
+            <span>Teléfono</span>
+            <input
+              type="text"
+              formControlName="telefono"
+              autocomplete="tel"
+              [disabled]="asesoraSaving"
+            />
+          </label>
+
+          @if (asesoraFormError) {
+            <div class="advisor-form-message advisor-form-message--error">
+              {{ asesoraFormError }}
+            </div>
+          }
+
+          @if (asesoraFormSuccess) {
+            <div class="advisor-form-message advisor-form-message--success">
+              {{ asesoraFormSuccess }}
+            </div>
+          }
+
+          <div class="advisor-form-actions">
+            @if (isEditingAsesora) {
+              <button
+                type="button"
+                class="advisor-form-button advisor-form-button--secondary"
+                (click)="cancelAsesoraEdit()"
+                [disabled]="asesoraSaving"
+              >
+                Cancelar edición
+              </button>
+            }
+
+            <button
+              type="submit"
+              class="advisor-form-button advisor-form-button--primary"
+              [disabled]="asesoraSaving"
+            >
+              {{
+                asesoraSaving
+                  ? 'Guardando...'
+                  : isEditingAsesora
+                    ? 'Guardar cambios'
+                    : 'Registrar asesor'
+              }}
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </section>
 }
