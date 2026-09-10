@@ -361,7 +361,8 @@ export class Kanban implements OnInit {
 
     this.kanbanDataService.getLeads().subscribe({
       next: (leads) => {
-        console.log('Leads reales de Firebase:', leads);
+        console.log('Leads reales:', leads);
+        console.log(`[leads] Total cargados: ${leads.length}`);
 
         for (const column of this.columns) {
           column.leads = leads.filter(
@@ -402,6 +403,7 @@ export class Kanban implements OnInit {
 
     this.kanbanDataService.getAsesoras().subscribe({
       next: (asesoras) => {
+        console.log(`[asesoras] Cargados desde users: ${asesoras.length}`, asesoras);
         this.asesoras = asesoras;
         this.asesorasLoading = false;
         this.cdr.markForCheck();

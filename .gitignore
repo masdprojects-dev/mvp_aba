@@ -2,6 +2,7 @@
 backend/venv/
 backend/__pycache__/
 backend/.env
+backend/serviceAccountKey.json
 
 # Frontend (Angular ya tiene el suyo adentro, pero por si acaso)
 frontend/node_modules/

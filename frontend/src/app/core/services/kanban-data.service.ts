@@ -1,4 +1,4 @@
-﻿import { inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 
 import {
   addDoc,
@@ -79,6 +79,8 @@ export interface Asesora {
   nombre: string;
   email?: string;
   telefono?: string;
+  role?: string;
+  active?: boolean;
   proyectos_asignados?: string[];
   esta_activa?: boolean;
   leads_totales?: number;
@@ -255,33 +257,34 @@ export class KanbanDataService {
   }
 
   /**
-   * Obtiene las asesoras directamente de Firestore.
+   * Obtiene todos los usuarios de la colección "users",
+   * imprime 'Users totales', filtra aquellos con role === "asesores"
+   * y active === true, e imprime 'Asesores'.
    */
   getAsesoras(): Observable<Asesora[]> {
     const ref = collection(
       this.firestore,
-      'asesoras',
+      'users',
     );
 
-    return collectionData(
-      query(ref),
-      {
-        idField: 'id',
-      },
-    ).pipe(
-      map((asesoras) =>
-        (asesoras as Asesora[])
+    return (collectionData(query(ref), { idField: 'id' }) as Observable<Asesora[]>).pipe(
+      map((users) => {
+        console.log('Users totales:', users);
+
+        const asesores = users.filter((u) => {
+          const roleVal = (u.role ?? u['rol'] ?? '').toString().toLowerCase().trim();
+          const activeVal = u.active ?? u.esta_activa ?? false;
+          return roleVal === 'asesores' && activeVal === true;
+        });
+
+        console.log('Asesores:', asesores);
+
+        return asesores
           .slice()
           .sort((a, b) =>
-            a.nombre.localeCompare(
-              b.nombre,
-              'es',
-              {
-                sensitivity: 'base',
-              },
-            ),
-          ),
-      ),
+            (a.nombre ?? '').localeCompare(b.nombre ?? '', 'es', { sensitivity: 'base' }),
+          );
+      }),
     );
   }
 
@@ -362,7 +365,7 @@ export class KanbanDataService {
   }
 
   // -------------------------------------------------------------------------
-  // Asesoras
+  // Asesoras / Users
   // -------------------------------------------------------------------------
 
   private async createAsesoraInternal(
@@ -370,7 +373,7 @@ export class KanbanDataService {
   ): Promise<void> {
     const ref = collection(
       this.firestore,
-      'asesoras',
+      'users',
     );
 
     const nombre = input.nombre.trim();
@@ -389,7 +392,8 @@ export class KanbanDataService {
           this.normalizarNombre(nombre),
         email,
         telefono,
-        esta_activa: true,
+        role: 'asesores',
+        active: true,
         proyectos_asignados: [],
         leads_totales: 0,
         creado_en: Timestamp.now(),
@@ -412,7 +416,7 @@ export class KanbanDataService {
 
     const asesoraRef = doc(
       this.firestore,
-      'asesoras',
+      'users',
       asesoraId,
     );
 
@@ -470,7 +474,7 @@ export class KanbanDataService {
 
     const ref = collection(
       this.firestore,
-      'asesoras',
+      'users',
     );
 
     const snapshot = await getDocs(

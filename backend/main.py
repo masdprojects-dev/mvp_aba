@@ -121,45 +121,69 @@ def obtener_siguiente_asesora(proyecto_id: str):
     if not db:
         return None
     try:
-        asesoras_ref = db.collection("asesoras")
+        users_ref = db.collection("users")
+
+        # --- LOG DIAGNÓSTICO: todos los users ---
+        todos_los_users = list(users_ref.stream())
+        print(f"🗂️  [users] Total de documentos en la colección: {len(todos_los_users)}")
+        for u in todos_los_users:
+            d = u.to_dict()
+            print(f"   · [{u.id}] role={d.get('role')} | active={d.get('active')} | nombre={d.get('nombre')}")
+
+        # --- LOG DIAGNÓSTICO: filtrados como asesores activos ---
+        asesores_activos = [
+            u for u in todos_los_users
+            if u.to_dict().get("role") == "asesores" and u.to_dict().get("active") is True
+        ]
+        print(f"✅ [users] Asesores con role='asesores' y active=True: {len(asesores_activos)}")
+        for u in asesores_activos:
+            d = u.to_dict()
+            print(f"   · [{u.id}] nombre={d.get('nombre')} | telefono={d.get('telefono')} | proyectos={d.get('proyectos_asignados')}")
+
         query = (
-            asesoras_ref
-            .where("esta_activa", "==", True)
+            users_ref
+            .where("role", "==", "asesores")
+            .where("active", "==", True)
             .where("proyectos_asignados", "array_contains", proyecto_id)
             .order_by("ultimo_lead_asignado", direction=firestore.Query.ASCENDING)
             .limit(1)
         )
         docs = list(query.stream())
-        
+
         if not docs:
+            print(f"⚠️  Sin asesor para proyecto '{proyecto_id}', usando fallback global...")
             fallback_query = (
-                asesoras_ref
-                .where("esta_activa", "==", True)
+                users_ref
+                .where("role", "==", "asesores")
+                .where("active", "==", True)
                 .order_by("ultimo_lead_asignado", direction=firestore.Query.ASCENDING)
                 .limit(1)
             )
             docs = list(fallback_query.stream())
-            
+
         if docs:
             doc = docs[0]
             asesora_data = doc.to_dict()
             asesora_data["id"] = doc.id
+            print(f"🎯 [turno] Asesor seleccionado: [{doc.id}] {asesora_data.get('nombre')}")
             return asesora_data
+        else:
+            print("❌ [turno] No se encontró ningún asesor disponible.")
     except Exception as e:
-        print(f"⚠️ Error al consultar asesora en turno: {e}")
+        print(f"⚠️ Error al consultar asesor en turno: {e}")
     return None
 
 def registrar_asignacion_asesora(asesora_id: str):
     if not db or not asesora_id:
         return
     try:
-        asesora_ref = db.collection("asesoras").document(asesora_id)
+        asesora_ref = db.collection("users").document(asesora_id)
         asesora_ref.update({
             "ultimo_lead_asignado": firestore.SERVER_TIMESTAMP,
             "leads_totales": firestore.Increment(1)
         })
     except Exception as e:
-        print(f"⚠️ Error actualizando métricas de la asesora: {e}")
+        print(f"⚠️ Error actualizando métricas del asesor: {e}")
 
 @app.get("/")
 def root():
