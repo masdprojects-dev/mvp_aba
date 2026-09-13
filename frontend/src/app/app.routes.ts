@@ -13,6 +13,13 @@ export const routes: Routes = [
       import('./features/auth/login/login')
         .then((m) => m.Login),
   },
+  {
+  path: 'forbidden',
+
+  loadComponent: () =>
+    import('./features/auth/forbidden/forbidden')
+      .then((m) => m.Forbidden),
+},
 
   {
     path: '',
