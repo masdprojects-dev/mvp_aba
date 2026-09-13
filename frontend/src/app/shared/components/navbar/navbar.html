@@ -1,0 +1,93 @@
+<header class="navbar" *ngIf="user$ | async as user">
+  <div class="navbar__brand">
+    <img
+      class="navbar__logo"
+      src="/assets/branding/aba-logo.jpg"
+      alt="Grupo ABA"
+    />
+  </div>
+
+  <nav class="navbar__navigation" aria-label="Navegación principal">
+    <button
+      class="navbar__link navbar__link--active"
+      type="button"
+    >
+      Inicio
+    </button>
+
+    <button
+      *ngIf="canViewSales(user)"
+      class="navbar__link"
+      type="button"
+    >
+      Ventas
+    </button>
+
+    <button
+      *ngIf="canViewInventory(user)"
+      class="navbar__link"
+      type="button"
+    >
+      Inventario
+    </button>
+
+    <button
+      *ngIf="canViewOperations(user)"
+      class="navbar__link"
+      type="button"
+    >
+      Operaciones y Cierres
+    </button>
+
+    <button
+      *ngIf="canViewAdministration(user)"
+      class="navbar__link"
+      type="button"
+    >
+      Administración
+    </button>
+  </nav>
+
+  <div class="navbar__actions">
+  <button
+  class="navbar__action"
+  type="button"
+  aria-label="Notificaciones"
+  title="Notificaciones"
+>
+  <svg
+    class="navbar__notification-icon"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+  </svg>
+</button>
+
+    <button
+      class="navbar__profile"
+      type="button"
+      aria-label="Perfil"
+    >
+      <span class="navbar__avatar">
+        {{ user.name.charAt(0).toUpperCase() }}
+      </span>
+
+      <span class="navbar__user-info">
+        <span class="navbar__user-name">
+          {{ user.name }}
+        </span>
+
+        <span class="navbar__user-role">
+          {{ user.role }}
+        </span>
+      </span>
+    </button>
+  </div>
+</header>

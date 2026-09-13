@@ -1,0 +1,244 @@
+:host {
+  display: block;
+}
+
+.navbar {
+  min-height: 72px;
+  padding: 0 28px;
+
+  display: flex;
+  align-items: center;
+  gap: 32px;
+
+  background: #ffffff;
+  border-bottom: 1px solid #e8e8e8;
+
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+}
+
+.navbar__brand {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__logo {
+  display: block;
+  width: 105px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.navbar__navigation {
+  flex: 1;
+
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+
+  min-width: 0;
+}
+
+.navbar__link {
+  position: relative;
+
+  padding: 25px 14px 23px;
+
+  border: 0;
+  background: transparent;
+
+  color: #606060;
+
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.navbar__link:hover {
+  color: #111111;
+  background: #fafafa;
+}
+
+.navbar__link--active {
+  color: #111111;
+  font-weight: 600;
+}
+
+.navbar__link--active::after {
+  content: '';
+
+  position: absolute;
+  right: 14px;
+  bottom: 0;
+  left: 14px;
+
+  height: 2px;
+
+  background: #111111;
+}
+
+.navbar__actions {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar__action {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid #e7e7e7;
+  border-radius: 50%;
+
+  background: #ffffff;
+  color: #181818;
+
+  cursor: pointer;
+}
+
+.navbar__action:hover {
+  background: #f7f7f7;
+}
+
+.navbar__notification-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.navbar__profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 5px 8px 5px 5px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: transparent;
+
+  font: inherit;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.navbar__profile:hover {
+  background: #f7f7f7;
+}
+
+.navbar__avatar {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: #111111;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.navbar__user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navbar__user-name {
+  max-width: 150px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: #171717;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.navbar__user-role {
+  color: #909090;
+
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 1000px) {
+  .navbar {
+    padding: 0 18px;
+    gap: 18px;
+  }
+
+  .navbar__navigation {
+    overflow-x: auto;
+
+    scrollbar-width: none;
+  }
+
+  .navbar__navigation::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navbar__link {
+    flex-shrink: 0;
+  }
+
+  .navbar__user-info {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .navbar {
+    min-height: auto;
+
+    padding: 10px 14px;
+
+    flex-wrap: wrap;
+  }
+
+  .navbar__logo {
+    width: 86px;
+    height: 36px;
+  }
+
+  .navbar__actions {
+    margin-left: auto;
+  }
+
+  .navbar__navigation {
+    order: 3;
+    flex-basis: 100%;
+
+    width: 100%;
+  }
+
+  .navbar__link {
+    padding: 11px 10px 10px;
+
+    font-size: 12px;
+  }
+}
