@@ -1,17 +1,11 @@
 import { Component } from '@angular/core';
-
-import { Kanban } from './features/kanban/kanban';
-import { Navbar } from './shared/components/navbar/navbar';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [
-    Navbar,
-    Kanban,
-  ],
+  imports: [RouterOutlet],
   template: `
-    <app-navbar />
-    <app-kanban />
+    <router-outlet />
   `,
 })
 export class App {}

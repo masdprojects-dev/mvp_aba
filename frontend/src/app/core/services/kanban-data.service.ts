@@ -261,32 +261,57 @@ export class KanbanDataService {
    * imprime 'Users totales', filtra aquellos con role === "asesores"
    * y active === true, e imprime 'Asesores'.
    */
-  getAsesoras(): Observable<Asesora[]> {
-    const ref = collection(
-      this.firestore,
-      'users',
-    );
+getAsesoras(): Observable<Asesora[]> {
+  const ref = collection(
+    this.firestore,
+    'users',
+  );
 
-    return (collectionData(query(ref), { idField: 'id' }) as Observable<Asesora[]>).pipe(
-      map((users) => {
-        console.log('Users totales:', users);
+  return (
+    collectionData(
+      query(ref),
+      {
+        idField: 'id',
+      },
+    ) as Observable<Asesora[]>
+  ).pipe(
+    map((users) =>
+      users
+        .filter((user) => {
+          const role =
+            (
+              user.role ??
+              user['rol'] ??
+              ''
+            )
+              .toString()
+              .toLowerCase()
+              .trim();
 
-        const asesores = users.filter((u) => {
-          const roleVal = (u.role ?? u['rol'] ?? '').toString().toLowerCase().trim();
-          const activeVal = u.active ?? u.esta_activa ?? false;
-          return roleVal === 'asesores' && activeVal === true;
-        });
+          const active =
+            user.active ??
+            user.esta_activa ??
+            false;
 
-        console.log('Asesores:', asesores);
-
-        return asesores
-          .slice()
-          .sort((a, b) =>
-            (a.nombre ?? '').localeCompare(b.nombre ?? '', 'es', { sensitivity: 'base' }),
+          return (
+            role === 'asesores' &&
+            active === true
           );
-      }),
-    );
-  }
+        })
+        .slice()
+        .sort((a, b) =>
+          (a.nombre ?? '')
+            .localeCompare(
+              b.nombre ?? '',
+              'es',
+              {
+                sensitivity: 'base',
+              },
+            ),
+        ),
+    ),
+  );
+}
 
   /**
    * Obtiene los proyectos directamente de Firestore.
