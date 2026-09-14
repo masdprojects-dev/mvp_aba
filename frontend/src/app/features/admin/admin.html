@@ -1,0 +1,215 @@
+<section class="admin">
+  <header class="admin__header">
+    <div>
+      <span class="admin__eyebrow"> Administración </span>
+
+      <h1 class="admin__title">Gestión de usuarios</h1>
+
+      <p class="admin__description">
+        Administra los usuarios, roles y accesos del equipo de CRM ABA.
+      </p>
+    </div>
+
+    <button class="admin__create-button" type="button" (click)="openCreateModal()">
+      + Nuevo usuario
+    </button>
+  </header>
+
+  <div class="admin__content">
+    <div *ngIf="loading" class="admin__message">Cargando usuarios...</div>
+
+    <div *ngIf="errorMessage" class="admin__message admin__message--error">
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="!loading && !errorMessage" class="admin__table-wrapper">
+      <table class="admin__table">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+
+            <th>Correo</th>
+
+            <th>Rol</th>
+
+            <th>Tipo</th>
+
+            <th>Estado</th>
+
+            <th>Acción</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>
+              <div class="admin__user">
+                <div class="admin__avatar">
+                  {{ user.name.charAt(0).toUpperCase() }}
+                </div>
+
+                <div>
+                  <strong>
+                    {{ user.name }}
+                  </strong>
+
+                  <span *ngIf="user.usuario" class="admin__username"> @{{ user.usuario }} </span>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              {{ user.email }}
+            </td>
+
+            <td>
+              {{ getRoleLabel(user.role) }}
+            </td>
+
+            <td>
+              <span class="admin__type" [class.admin__type--admin]="user.is_admin">
+                {{ user.is_admin ? 'Administrador' : 'Empleado' }}
+              </span>
+            </td>
+
+            <td>
+              <span
+                class="admin__status"
+                [class.admin__status--active]="user.active"
+                [class.admin__status--inactive]="!user.active"
+              >
+                {{ user.active ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+
+            <td>
+              <button
+                class="admin__status-button"
+                type="button"
+                [disabled]="updatingUserId === user.documentId"
+                (click)="toggleUserStatus(user)"
+              >
+                <ng-container *ngIf="updatingUserId !== user.documentId">
+                  {{ user.active ? 'Desactivar' : 'Activar' }}
+                </ng-container>
+
+                <ng-container *ngIf="updatingUserId === user.documentId">
+                  Guardando...
+                </ng-container>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="users.length === 0" class="admin__empty">No hay otros usuarios registrados.</div>
+    </div>
+  </div>
+
+  <div *ngIf="showCreateModal" class="admin-modal">
+    <div class="admin-modal__backdrop" (click)="closeCreateModal()"></div>
+
+    <div
+      class="admin-modal__dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="new-user-title"
+    >
+      <div class="admin-modal__header">
+        <div>
+          <span class="admin__eyebrow"> Administración </span>
+
+          <h2 id="new-user-title" class="admin-modal__title">Nuevo usuario</h2>
+        </div>
+
+        <button
+          class="admin-modal__close"
+          type="button"
+          (click)="closeCreateModal()"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+      </div>
+
+      <form class="admin-modal__form" (ngSubmit)="createUser()">
+        <label class="admin-modal__field">
+          <span>Nombre *</span>
+
+          <input type="text" name="name" [(ngModel)]="newUser.name" required />
+        </label>
+
+        <label class="admin-modal__field">
+          <span>Usuario *</span>
+
+          <input type="text" name="usuario" [(ngModel)]="newUser.usuario" required />
+        </label>
+
+        <label class="admin-modal__field">
+          <span>Correo *</span>
+
+          <input type="email" name="email" [(ngModel)]="newUser.email" required />
+        </label>
+
+        <label class="admin-modal__field">
+          <span>Contraseña *</span>
+
+          <input
+            type="password"
+            name="password"
+            [(ngModel)]="newUser.password"
+            minlength="6"
+            required
+          />
+        </label>
+
+        <label class="admin-modal__field">
+          <span>Teléfono</span>
+
+          <input type="tel" name="telefono" [(ngModel)]="newUser.telefono" />
+        </label>
+
+        <label class="admin-modal__field">
+          <span>Rol *</span>
+
+          <select name="role" [(ngModel)]="newUser.role" required>
+            <option value="direccion_general">Dirección General</option>
+
+            <option value="financiera">Financiera</option>
+
+            <option value="inmobiliaria">Inmobiliaria</option>
+
+            <option value="asesores">Asesor</option>
+
+            <option value="marketing">Marketing</option>
+          </select>
+        </label>
+
+        <label class="admin-modal__checkbox">
+          <input type="checkbox" name="is_admin" [(ngModel)]="newUser.is_admin" />
+
+          <span> Cuenta de administrador </span>
+        </label>
+
+        <p *ngIf="createUserError" class="admin-modal__error">
+          {{ createUserError }}
+        </p>
+
+        <div class="admin-modal__actions">
+          <button
+            class="admin-modal__cancel"
+            type="button"
+            [disabled]="creatingUser"
+            (click)="closeCreateModal()"
+          >
+            Cancelar
+          </button>
+
+          <button class="admin-modal__submit" type="submit" [disabled]="creatingUser">
+            {{ creatingUser ? 'Creando...' : 'Crear usuario' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

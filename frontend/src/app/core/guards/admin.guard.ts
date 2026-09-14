@@ -5,13 +5,8 @@ import {
   Router,
 } from '@angular/router';
 
-import {
-  AuthService,
-} from '../services/auth.service';
-
-import {
-  UserSessionService,
-} from '../services/user-session.service';
+import { AuthService } from '../services/auth.service';
+import { UserSessionService } from '../services/user-session.service';
 
 
 export const adminGuard: CanActivateFn =
@@ -31,8 +26,8 @@ export const adminGuard: CanActivateFn =
       userSession.currentUser;
 
 
-    // Si se recargó la página,
-    // intentamos recuperar la sesión de Firebase.
+    // Si la página fue recargada,
+    // restauramos la sesión desde Firebase.
     if (!user) {
 
       user =
@@ -40,7 +35,7 @@ export const adminGuard: CanActivateFn =
     }
 
 
-    // Sin sesión -> login
+    // Sin sesión válida -> Login
     if (!user) {
 
       return router.createUrlTree([
@@ -49,8 +44,8 @@ export const adminGuard: CanActivateFn =
     }
 
 
-    // Tiene sesión, pero no es administrador.
-    if (!user.is_admin) {
+    // Usuario autenticado, pero no administrador.
+    if (user.is_admin !== true) {
 
       return router.createUrlTree([
         '/forbidden',
